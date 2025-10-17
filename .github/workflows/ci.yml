@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    tags: [ v* ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+
+      - name: Install & setup uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build distribution package
+        run: uv build
+
+      - name: Upload distribution package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-dist
+          path: dist
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
+    environment:
+      name: pypi
+      url: https://pypi.org/project/bssl-integrations/
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: package-dist
+          path: dist
+
+      - name: Generate attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: dist/*
+
+      - name: Remove attestation files
+        shell: bash
+        run: rm -f dist/*.publish.attestation
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: ${{ contains(github.ref, 'a') || contains(github.ref, 'b') || contains(github.ref, 'rc') }}
+          generate_release_notes: true
+          files: dist/*
