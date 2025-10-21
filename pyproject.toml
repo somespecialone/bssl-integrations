@@ -1,13 +1,33 @@
 [project]
 name = "bssl-integrations"
-version = "0.1.0"
-description = ""
+version = "1.0.0a0"
+description = "BSSL project integration with existing http clients"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 authors = [{ name = "Dmytro Tkachenko", email = "itsme@somespecial.one" }]
-keywords = []
-classifiers = []
+keywords = ["bssl", "boringssl", "tls", "http", "aiohttp", "httpx"]
+classifiers = [
+    "Programming Language :: Python",
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Development Status :: 3 - Alpha",
+    "Framework :: aiohttp",
+    "Framework :: httpx",
+]
 
 dependencies = [
     "bssl>=1.0.0a0",
