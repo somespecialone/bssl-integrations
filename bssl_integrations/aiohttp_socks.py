@@ -4,26 +4,16 @@ All ssl.SSLContext passed to request methods and session will be ignored
 """
 
 import asyncio
-import sys
-import socket
-import ssl
-import collections
-import itertools
-import warnings
-from asyncio import staggered, selector_events, proactor_events, sslproto, constants
 
 from python_socks.async_.asyncio.v2._proxy import (
     AsyncioProxy,
     Resolver,
-    DEFAULT_TIMEOUT,
-    ProxyTimeoutError,
     ProxyConnectionError,
     ProxyError,
     ReplyError,
     AsyncioSocketStream,
     create_connector,
 )
-from aiohttp.connector import ClientConnectorError, ResponseHandler
 from aiohttp_socks import ProxyConnector, ProxyType
 from aiohttp_socks.connector import NoResolver, TCPConnector, _ResponseHandler, _BaseProxyConnector
 

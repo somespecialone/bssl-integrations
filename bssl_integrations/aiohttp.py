@@ -12,11 +12,8 @@ import itertools
 import aiohappyeyeballs
 
 from aiohttp.connector import (
-    ClientRequest,
     ClientConnectorDNSError,
-    BaseConnector,
     TCPConnector,
-    AddrInfoType,
     ClientConnectorError,
     ceil_timeout,
     cert_errors,
@@ -25,12 +22,10 @@ from aiohttp.connector import (
     ssl_errors,
     AbstractResolver,
     sentinel,
-    _SENTINEL,
     SocketFactoryType,
     DefaultResolver,
     _DNSCacheTable,
     ResolveResult,
-    ServerFingerprintMismatch,
     ClientConnectionError,
 )
 
@@ -41,34 +36,11 @@ from .ssl import DEF_BSSL_CONTEXT, BSSLProtocol
 __all__ = ("BSSLConnector",)
 
 
-def _check_ssl_socket(sock):
-    if ssl is not None and isinstance(sock, ssl.SSLSocket):
-        raise TypeError("Socket cannot be of type SSLSocket")
-
-
-def _interleave_addrinfos(addrinfos, first_address_family_count=1):
-    # Group addresses by family
-    addrinfos_by_family = collections.OrderedDict()
-    for addr in addrinfos:
-        family = addr[0]
-        if family not in addrinfos_by_family:
-            addrinfos_by_family[family] = []
-        addrinfos_by_family[family].append(addr)
-    addrinfos_lists = list(addrinfos_by_family.values())
-
-    reordered = []
-    if first_address_family_count > 1:
-        reordered.extend(addrinfos_lists[0][: first_address_family_count - 1])
-        del addrinfos_lists[0][: first_address_family_count - 1]
-    reordered.extend(a for a in itertools.chain.from_iterable(itertools.zip_longest(*addrinfos_lists)) if a is not None)
-    return reordered
-
-
 class BSSLConnector(TCPConnector):
     def __init__(
         self,
-        *,
         tls_config: TLSClientConfiguration | None = None,
+        *,
         use_dns_cache: bool = True,
         ttl_dns_cache: int | None = 10,
         family: socket.AddressFamily = socket.AddressFamily.AF_UNSPEC,
