@@ -25,8 +25,6 @@ classifiers = [
     "Operating System :: Unix",
     "Operating System :: MacOS",
     "Development Status :: 3 - Alpha",
-    "Framework :: aiohttp",
-    "Framework :: httpx",
 ]
 
 dependencies = [
